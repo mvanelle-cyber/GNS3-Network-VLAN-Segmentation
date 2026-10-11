@@ -14,3 +14,16 @@ Sécuriser les flux d'une infrastructure d'entreprise sous GNS3 en isolant le tr
 ##  Validation de l'Étanchéité (Tests de Charge)
 * Les tests d'interconnexion initiaux (VLAN par défaut) affichaient un routage fluide du trafic ICMP.
 * Suite à l'application des masques de VLAN, l'isolation logique est validée avec succès : toute tentative de ping inter-VLAN (PC1 vers PC2) se heurte à un rejet automatique du commutateur avec l'erreur réglementaire : "host not reachable".
+  
+##  Laboratoire Complémentaire : Vulnérabilité des Infrastructures Combinées (Switch vs Hub)
+
+### Descriptif de l'Audit Cyber
+Mise en évidence de la surface d'attaque induite par l'utilisation d'équipements de Niveau 1 (Hubs) face à l'étanchéité des architectures commutées de Niveau 2 (Switches).
+
+###  Topologie de Test
+* **Zone Commutée (Sécurisée) :** `PC_RH` isolé de manière étanche sur le Switch Central.
+* **Zone Partagée (Vulnérable) :** `PC_Compta` et un tiers malveillant (`PC_Espion`) cohabitant sur un Ethernet Hub.
+
+###  Preuve d'Interception (Analyse Wireshark)
+* **Constat technique :** Activation d'une sonde de capture passive (Sniffing) sur l'interface du `PC_Espion` (`192.168.20.99`).
+* **Résultat empirique :** Capture réussie de l'intégralité du trafic ICMP/ARP circulant entre la comptabilité et le reste du réseau. Le Hub dupliquant aveuglément les trames, la confidentialité des données inter-services est rompue à l'échelle du segment de diffusion.
