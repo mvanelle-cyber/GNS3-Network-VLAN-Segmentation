@@ -27,3 +27,4 @@ Mise en évidence de la surface d'attaque induite par l'utilisation d'équipemen
 ###  Preuve d'Interception (Analyse Wireshark)
 * **Constat technique :** Activation d'une sonde de capture passive (Sniffing) sur l'interface du `PC_Espion` (`192.168.20.99`).
 * **Résultat empirique :** Capture réussie de l'intégralité du trafic ICMP/ARP circulant entre la comptabilité et le reste du réseau. Le Hub dupliquant aveuglément les trames, la confidentialité des données inter-services est rompue à l'échelle du segment de diffusion.
+
