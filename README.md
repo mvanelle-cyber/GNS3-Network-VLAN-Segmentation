@@ -28,3 +28,12 @@ Mise en évidence de la surface d'attaque induite par l'utilisation d'équipemen
 * **Constat technique :** Activation d'une sonde de capture passive (Sniffing) sur l'interface du `PC_Espion` (`192.168.20.99`).
 * **Résultat empirique :** Capture réussie de l'intégralité du trafic ICMP/ARP circulant entre la comptabilité et le reste du réseau. Le Hub dupliquant aveuglément les trames, la confidentialité des données inter-services est rompue à l'échelle du segment de diffusion.
 
+##  Laboratoire 7 : Architecture Multi-Commutateurs Résiliente & Marquage 802.1Q (Projet Avancé)
+
+###  Descriptif de l'Infrastructure
+Déploiement d'une topologie d'entreprise résiliente de Niveau 2/3 à trois commutateurs interconnectés (`SW-Core`, `SW-Etage1`, `SW-Etage2`) pour valider le transport de flux étanches via des liaisons dorsales d'agrégation.
+
+###  Preuve de Concept & Analyse Wireshark (Trunking)
+* **Mécanisme audité :** Capture de paquets sur la dorsale Trunk inter-switches reliant le cœur de réseau au commutateur d'accès.
+* **Constat empirique :** Interception réussie d'une trame de diffusion ARP. L'analyse microscopique confirme l'injection et la présence de l'en-tête **`802.1Q Virtual LAN`** taguée avec le **`VLAN ID: 10`**. 
+* **Sécurité validée :** L'isolation logique est parfaitement opérante; malgré le transport physique partagé sur la même dorsale, le trafic du VLAN 10 reste totalement invisible pour les segments du VLAN 20.
