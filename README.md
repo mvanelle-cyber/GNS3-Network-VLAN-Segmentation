@@ -37,3 +37,38 @@ Déploiement d'une topologie d'entreprise résiliente de Niveau 2/3 à trois com
 * **Mécanisme audité :** Capture de paquets sur la dorsale Trunk inter-switches reliant le cœur de réseau au commutateur d'accès.
 * **Constat empirique :** Interception réussie d'une trame de diffusion ARP. L'analyse microscopique confirme l'injection et la présence de l'en-tête **`802.1Q Virtual LAN`** taguée avec le **`VLAN ID: 10`**. 
 * **Sécurité validée :** L'isolation logique est parfaitement opérante; malgré le transport physique partagé sur la même dorsale, le trafic du VLAN 10 reste totalement invisible pour les segments du VLAN 20.
+
+
+ Laboratoire 8 : Architecture Réseau Redondante & Haute Disponibilité (FHRP / HSRP-vrrp Simulation)
+
+ Descriptif de l'Infrastructure
+Conception et déploiement d'une topologie d'entreprise en losange à haute disponibilité (High Availability) combinant la segmentation de Niveau 2 (VLANs/Trunking) et les mécanismes de redondance de passerelle par défaut. L'objectif est de garantir une résilience totale de l'infrastructure face aux pannes matérielles critiques.
+
+ Topologie & Plan d'Adressage Statique
+L'infrastructure s'organise autour d'une double liaison montante stratégique :
+* **Segment d'Accès Redondant :** Les clients du `VLAN 10` convergent vers le commutateur `SW-Acces` interconnecté simultanément à deux équipements de routage/passerelle.
+* **Passerelle Virtuelle Commune :** `192.168.10.1/24` (FHRP Virtual Gateway).
+* **Nœud Actif (Master) :** `R1-Principal` interceptant les flux nominaux.
+* **Nœud Passif (Backup) :** `R2-Secours` prêt à reprendre le trafic de manière transparente.
+
+ Déroulement du Test d'Audit (Simulation de Panne Critique)
+
+1. **Phase Nominale :**
+   Configuration des hôtes VPCS avec persistance des données (`save`) et ciblage de la passerelle virtuelle :
+   ```bash
+   PC-Client1> ip 192.168.10.10/24 192.168.10.1
+   PC-Client1> ping 192.168.10.20 -t
+   ```
+   *Constat :* Transmission fluide et ininterrompue des trames ICMP à travers le flanc gauche de la topologie.
+
+2. **Phase d'Incident (Injection du Crash) :**
+   Coupure physique et logicielle instantanée du nœud prioritaire (`R1-Principal ➡️ Stop`). Les indicateurs de liaison virent au rouge.
+
+3. **Phase de Résilience (Bascule HA) :**
+   * *Comportement observateur (Sonde Wireshark / VPCS) :* Perte éphémère d'un unique paquet (Timeout < 2s).
+   * *Résolution autonome :* Convergence immédiate du switch d'accès vers le second chemin physique. `R2-Secours` assume l'identité de la passerelle virtuelle `192.168.10.1`. Le flux de requêtes reprend automatiquement sans intervention humaine ni reconfiguration des clients.
+
+ Compétences Validées
+* Modélisation de réseaux tolérants aux pannes (Fault-Tolerant Network Architectures).
+* Maîtrise conceptuelle des protocoles de redondance du premier saut (FHRP / HSRP / VRRP).
+* Configuration d'interfaces Trunk 802.1Q distribuées sur des topologies de distribution multiniveaux.
